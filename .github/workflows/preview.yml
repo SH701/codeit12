@@ -1,42 +1,26 @@
-# # preview 용 -> main 브랜치가 아닐 때
-# name: Preview 배포
+# .github/workflows/actions.yml
 
-# env:
-#   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-#   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+name: Github Actions로 테스트 자동화하기
+on: push
 
-# on:
-#   pull_request:
-#     branches:
-#       - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github Repository 불러오기
+        uses: actions/checkout@v5
 
-# jobs:
-#   Deploy-Preview:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Github 레포지토리 불러오기
-#         uses: actions/checkout@v5
+      - name: Node.js 설치하기
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
 
-#       - name: Node.js 설치
-#         uses: actions/setup-node@v6
-#         with:
-#           node-version: '24'
-#           cache: 'npm'
-
-#       - name: 의존성 라이브러리 설치
-#         run: npm ci
-
-#       - name: 테스트 실행하기
-#         run: npm run test
-
-#       - name: Vercel CLI 설치
-#         run: npm install --global vercel@latest
-
-#       - name: Vercel 환경 정보 가져오기
-#         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-#       - name: Vercel에서 빌드한다.
-#         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-#       - name: Vercel에 배포하기
-#         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+      - name: npm 설치 및 빌드 시간 측정
+        run: |
+          echo "=== npm 테스트 시작 ==="
+          echo "npm install 시작"
+          time npm install
+          echo "npm run build 시작"
+          time npm run build
+          echo "=== npm 테스트 종료 ==="
